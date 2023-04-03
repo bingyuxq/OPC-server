@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net6.0</TargetFramework>
+    <RootNamespace>OPC_server</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="OPCFoundation.NetStandard.Opc.Ua" Version="1.4.371.60" />
+    <PackageReference Include="StackExchange.Redis" Version="2.6.104" />
+    <PackageReference Include="StackExchange.Redis.Extensions.Core" Version="9.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="MyOpcUaServer.Config.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>
