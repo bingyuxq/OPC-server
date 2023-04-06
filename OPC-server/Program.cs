@@ -6,46 +6,66 @@ using Opc.Ua;
 using Opc.Ua.Configuration;
 using Opc.Ua.Server;
 using StackExchange.Redis;
-using static System.Net.Mime.MediaTypeNames;
+
 
 namespace OPC_server
 {
     internal class Program
     {
+        public static bool autoAccept = false;
+        public static bool renewCertificate = false;
+        public static string password = null;
+        public static string configSectionName = "OpcUaServer";
+        public const string namespaceUris = "http://opcfoundation.org/Quickstarts/ReferenceServer";
+
         static async Task Main(string[] args)
         {
-            Console.WriteLine("Hello, World!");
-            CertificatePasswordProvider PasswordProvider = new CertificatePasswordProvider("");
-            ApplicationInstance application = new ApplicationInstance
+            // create the UA server
+            var server = new MainOpcUaServer<ReferenOpcUaReverseConnectServerceServer>
             {
-                ApplicationName = "MyOpcUaServer",
-                ApplicationType = ApplicationType.Server,
-                ConfigSectionName = "MyOpcUaServer",
-                CertificatePasswordProvider = PasswordProvider
+                AutoAccept = autoAccept,
+                Password = password
             };
 
+            await server.LoadAsync(configSectionName).ConfigureAwait(false);
 
-            // load the application configuration.
-            await application.LoadApplicationConfiguration(false).ConfigureAwait(false);
+            await server.CheckCertificateAsync(renewCertificate).ConfigureAwait(false);
 
-            // Load the application configuration.
-            ApplicationConfiguration config = await application.LoadApplicationConfiguration(false).ConfigureAwait(false);
+            server.Create(Utils.NodeManagerFactories);
 
-            // Check the application certificate.
-            bool haveAppCertificate = await application.CheckApplicationInstanceCertificate(false, 0);
-
-            if (!haveAppCertificate)
-            {
-                throw new Exception("Application instance certificate invalid!");
-            }
-
-            // Start the server.
-            await application.Start(new MyOpcUaServer());
-            Console.WriteLine("Server started. Press Enter to exit...");
+            await server.StartAsync().ConfigureAwait(false);
             Console.ReadLine();
+            //CertificatePasswordProvider PasswordProvider = new CertificatePasswordProvider("");
+            //ApplicationInstance application = new ApplicationInstance
+            //{
+            //    ApplicationName = "MyOpcUaServer",
+            //    ApplicationType = ApplicationType.Server,
+            //    ConfigSectionName = "MyOpcUaServer",
+            //    CertificatePasswordProvider = PasswordProvider
+            //};
 
-            // Stop the server before exiting.
-            application.Stop();
+
+            //// load the application configuration.
+            //await application.LoadApplicationConfiguration(false).ConfigureAwait(false);
+
+            //// Load the application configuration.
+            //ApplicationConfiguration config = await application.LoadApplicationConfiguration(false).ConfigureAwait(false);
+
+            //// Check the application certificate.
+            //bool haveAppCertificate = await application.CheckApplicationInstanceCertificate(false, 0);
+
+            //if (!haveAppCertificate)
+            //{
+            //    throw new Exception("Application instance certificate invalid!");
+            //}
+
+            //// Start the server.
+            //await application.Start(new MainOpcUaServer());
+            //Console.WriteLine("Server started. Press Enter to exit...");
+            //Console.ReadLine();
+
+            //// Stop the server before exiting.
+            //application.Stop();
 
         }
     }

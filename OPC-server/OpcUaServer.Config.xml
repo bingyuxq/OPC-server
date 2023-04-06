@@ -4,9 +4,9 @@
   xmlns:ua="http://opcfoundation.org/UA/2008/02/Types.xsd"
   xmlns="http://opcfoundation.org/UA/SDK/Configuration.xsd"
 >
-	<ApplicationName>OpcUaServer Reference Server</ApplicationName>
-	<ApplicationUri>urn:localhost:UA:OpcUaServer:ReferenceServer</ApplicationUri>
-	<ProductUri>uri:opcfoundation.org:OpcUaServer:ReferenceServer</ProductUri>
+	<ApplicationName>OpcUaServer</ApplicationName>
+	<ApplicationUri>urn:localhost:UA:OpcUaServer</ApplicationUri>
+	<ProductUri>uri:opcfoundation.org:OpcUaServer</ProductUri>
 	<ApplicationType>Server_0</ApplicationType>
 
 	<SecurityConfiguration>
@@ -74,8 +74,7 @@
 	</TransportQuotas>
 	<ServerConfiguration>
 		<BaseAddresses>
-			<ua:String>https://localhost:62540/OpcUaServer/ReferenceServer</ua:String>
-			<ua:String>opc.tcp://localhost:4840/OpcUaServer/ReferenceServer</ua:String>
+			<ua:String>opc.tcp://localhost:4840/OpcUaServer/</ua:String>
 		</BaseAddresses>
 		<!-- 
     These list the alternate addresses (via firewalls, multiple NICs etc.) that can be

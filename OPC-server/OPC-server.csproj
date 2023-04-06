@@ -9,14 +9,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="nauful-LibUA-core" Version="1.0.8" />
     <PackageReference Include="OPCFoundation.NetStandard.Opc.Ua" Version="1.4.371.60" />
     <PackageReference Include="StackExchange.Redis" Version="2.6.104" />
     <PackageReference Include="StackExchange.Redis.Extensions.Core" Version="9.1.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="MyOpcUaServer.Config.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    <None Update="OpcUaServer.Config.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 
