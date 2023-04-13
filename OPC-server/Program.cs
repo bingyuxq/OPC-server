@@ -34,6 +34,7 @@ namespace OPC_server
             server.Create(Utils.NodeManagerFactories);
 
             await server.StartAsync().ConfigureAwait(false);
+
             Console.ReadLine();
             //CertificatePasswordProvider PasswordProvider = new CertificatePasswordProvider("");
             //ApplicationInstance application = new ApplicationInstance

@@ -9,6 +9,11 @@ using Opc.Ua;
 using Opc.Ua.Server;
 using Opc.Ua.Test;
 using Range = Opc.Ua.Range;
+using Opc.Ua.Gds;
+using DataTypeIds = Opc.Ua.DataTypeIds;
+using ObjectIds = Opc.Ua.ObjectIds;
+using BrowseNames = Opc.Ua.BrowseNames;
+using ObjectTypeIds = Opc.Ua.ObjectTypeIds;
 
 namespace OPC_server
 {
@@ -156,12 +161,13 @@ namespace OPC_server
                 {
                     externalReferences[ObjectIds.ObjectsFolder] = references = new List<IReference>();
                 }
-
+                load(references);
                 FolderState root = CreateFolder(null, "CTT", "CTT");
                 root.AddReference(ReferenceTypes.Organizes, true, ObjectIds.ObjectsFolder);
                 references.Add(new NodeStateReference(ReferenceTypes.Organizes, false, root.NodeId));
                 root.EventNotifier = EventNotifiers.SubscribeToEvents;
                 AddRootNotifier(root);
+
 
                 List<BaseDataVariableState> variables = new List<BaseDataVariableState>();
 
@@ -2761,6 +2767,22 @@ namespace OPC_server
         private UInt16 m_simulationInterval = 1000;
         private bool m_simulationEnabled = true;
         private List<BaseDataVariableState> m_dynamicNodes;
+        #endregion
+
+        #region User code
+        private void load(IList<IReference> references)
+        {
+
+            FolderState root = CreateFolder(null, "CTT2", "CTT2");
+            root.AddReference(ReferenceTypes.Organizes, true, ObjectIds.ObjectsFolder);
+            references.Add(new NodeStateReference(ReferenceTypes.Organizes, false, root.NodeId));
+            root.EventNotifier = EventNotifiers.SubscribeToEvents;
+            AddRootNotifier(root);
+            BaseDataVariableState var = CreateVariable(root, "Boolean", "Boolean", DataTypeIds.Boolean, ValueRanks.Scalar);
+            var.Value = DateTime.Now.Ticks;
+            AddPredefinedNode(SystemContext, root);
+
+        }
         #endregion
     }
     public static class VariableExtensions
