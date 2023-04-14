@@ -282,7 +282,7 @@ namespace OPC_server
             }
 
             // User with permission to configure server
-            if (userName == "sysadmin" && password == "demo")
+            if (userName == "admin" && password == "bingyuxq")
             {
                 UserIdentity userIdentity = new UserIdentity(userNameToken);
                 userIdentity.GrantedRoleIds.Add(ObjectIds.WellKnownRole_ConfigureAdmin);
@@ -292,8 +292,8 @@ namespace OPC_server
             }
 
             // standard users for CTT verification
-            if (!((userName == "user1" && password == "password") ||
-                (userName == "user2" && password == "password1")))
+            if (!((userName == "user1" && password == "passworduser1") ||
+                (userName == "user2" && password == "passworduser2")))
             {
                 // construct translation object with default text.
                 TranslationInfo info = new TranslationInfo(

@@ -1449,6 +1449,20 @@ namespace OPC_server
         private void load(IList<IReference> references)
         {
             RedisValue[] opcUaNamespace = RedisConnection.database.SetMembers("opcua:namespace");
+            RolePermissionTypeCollection rolePermissions = new RolePermissionTypeCollection()
+                    {
+                        // allow access to users with SecurityAdmin role
+                        new RolePermissionType()
+                        {
+                            RoleId = ObjectIds.WellKnownRole_SecurityAdmin,
+                            Permissions = (uint)(PermissionType.Browse | PermissionType.Read| PermissionType.ReadRolePermissions | PermissionType.Write)
+                        },
+                        new RolePermissionType()
+                        {
+                            RoleId=ObjectIds.WellKnownRole_Anonymous,
+                            Permissions = (uint)(PermissionType.Browse|PermissionType.Read)
+                        }
+                    };
             foreach (RedisValue prefix in opcUaNamespace)
             {
                 var prefixStr = prefix.ToString().Split(':')[1];
@@ -1463,6 +1477,7 @@ namespace OPC_server
                 {
                     string tag = key.ToString().Split(':')[2];
                     BaseDataVariableState var = CreateDynamicVariable(root, key, tag, DataTypeIds.Double, ValueRanks.Scalar);
+                    var.RolePermissions = rolePermissions;
                 }
                 AddPredefinedNode(SystemContext, root);
             }
