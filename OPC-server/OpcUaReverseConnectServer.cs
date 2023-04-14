@@ -32,7 +32,7 @@ namespace OPC_server
         /// </remarks>
         protected override MasterNodeManager CreateMasterNodeManager(IServerInternal server, ApplicationConfiguration configuration)
         {
-            Console.WriteLine("Creating the Reference Server Node Manager.");
+            Console.WriteLine("Creating the Server Node Manager.");
 
             IList<INodeManager> nodeManagers = new List<INodeManager>();
 
