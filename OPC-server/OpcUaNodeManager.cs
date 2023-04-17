@@ -1444,7 +1444,7 @@ namespace OPC_server
             public string tag { get; set; }
             public string pointId { get; set; }
             public double value { get; set; }
-            public string updateTime { get; set; }
+            public long updateTime { get; set; }
         }
         private void load(IList<IReference> references)
         {
@@ -1488,7 +1488,7 @@ namespace OPC_server
             //root.EventNotifier = EventNotifiers.SubscribeToEvents;
             //AddRootNotifier(root);
             //BaseDataVariableState var = CreateVariable(root, "Boolean", "Boolean", DataTypeIds.Boolean, ValueRanks.Scalar);
-            //var.Value = DateTime.Now.Ticks;
+            //var.Value = DateTime.UtcNow.Ticks;
             //AddPredefinedNode(SystemContext, root);
 
         }
@@ -1504,11 +1504,14 @@ namespace OPC_server
                         RedisValue value = RedisConnection.database.StringGet(variable.BrowseName.Name);
 
                         RedisData data = JsonSerializer.Deserialize<RedisData>(value);
-                        if (DateTime.Compare(DateTime.Parse(data.updateTime), variable.Timestamp) > 0)
+                        if (DateTime.Compare(timestampConvert(data.updateTime), variable.Timestamp) > 0)
                         {
                             //Console.WriteLine($"{variable.BrowseName.Name}->{data.tag}->{data.pointId}->{data.value}->{data.updateTime}");
-                            variable.Value = data.value;
-                            variable.Timestamp = DateTime.ParseExact(data.updateTime, "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
+                            if (data.value != 0 && data.updateTime !=0)
+                            {
+                                variable.Value = data.value;
+                            }
+                            variable.Timestamp = timestampConvert(data.updateTime);
                             variable.ClearChangeMasks(SystemContext, false);
                             updateCount++;
                         }
@@ -1524,6 +1527,25 @@ namespace OPC_server
                 }
                 Console.WriteLine($"刷新了{updateCount}个测点，{keepCount}个测点未更新");
             }
+        }
+        public static long timestampConvert(string timeStr)
+        {
+            DateTime dateTimeLocal;
+            if (DateTime.TryParseExact(timeStr, "yyyy-MM-dd HH:mm:ss", null, DateTimeStyles.None, out dateTimeLocal))
+            {
+                long unixTime = (long)dateTimeLocal.ToUniversalTime().Subtract(new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).TotalMilliseconds;
+                // 如果需要转换为毫秒级别的 Unix 时间戳，则将 TotalSeconds 改为 TotalMilliseconds
+                return unixTime;
+            }
+            else
+            {
+                return 0;
+            }
+        }
+        public static DateTime timestampConvert(long timestamp)
+        {
+            DateTime dateTime = DateTimeOffset.FromUnixTimeMilliseconds(timestamp).DateTime;
+            return dateTime;
         }
         #endregion
     }
