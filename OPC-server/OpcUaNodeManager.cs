@@ -1504,11 +1504,13 @@ namespace OPC_server
                         RedisValue value = RedisConnection.database.StringGet(variable.BrowseName.Name);
 
                         RedisData data = JsonSerializer.Deserialize<RedisData>(value);
-                        if (DateTime.Compare(timestampConvert(data.updateTime), variable.Timestamp) > 0)
+                        int timediff = DateTime.Compare(timestampConvert(data.updateTime), variable.Timestamp);
+                        if (timediff > 0)
                         {
                             //Console.WriteLine($"{variable.BrowseName.Name}->{data.tag}->{data.pointId}->{data.value}->{data.updateTime}");
                             if (data.value != 0 && data.updateTime !=0)
                             {
+                                variable.StatusCode = StatusCodes.Good;
                                 variable.Value = data.value;
                             }
                             variable.Timestamp = timestampConvert(data.updateTime);
@@ -1517,6 +1519,15 @@ namespace OPC_server
                         }
                         else
                         {
+                            if (variable.StatusCode != StatusCodes.Bad)
+                            {
+                                if (timediff > 86400000)
+                                {
+                                    variable.StatusCode = StatusCodes.Bad;
+                                    variable.ClearChangeMasks(SystemContext, false);
+                                    updateCount++;
+                                }
+                            }
                             keepCount++;
                         }
                     }
